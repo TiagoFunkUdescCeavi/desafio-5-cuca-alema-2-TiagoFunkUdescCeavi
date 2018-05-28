@@ -132,6 +132,19 @@ p {
   max-width: 75%;
 }
 
+button#reiniciar{
+    position: fixed;
+    left: 90%;
+    bottom: 20%;
+}
+
+
+button#resposta{
+    position: fixed;
+    left: 90%;
+    bottom: 10%;
+}
+
 @media(max-width: 700px){
     article{
         width: 95%;
