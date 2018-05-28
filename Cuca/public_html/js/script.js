@@ -7,10 +7,46 @@ var cliquouUm = false;
 var cliquouDois = false;
 var cliquouTres = false;
 
+var resposta;
+var listaResposta = [];
+
+iniciarComponenetes();
 carregarListas();
 addEvento(divsClasseUm);
 addEvento(divsClasseDois);
 addEvento(divsClasseTres);
+
+function iniciarComponenetes(){
+    let botao = document.getElementById("reiniciar");
+    botao.addEventListener("click", limparTela );
+    
+    botao = document.getElementById("resposta");
+    botao.addEventListener("click", calcularResposta );
+}
+
+function limparTela(){
+    location.reload();
+}
+
+function calcularResposta(){
+    if( cliquouUm === true && cliquouDois === true && cliquouTres === true ){
+        for (let i = 0; i < listaResposta.length; i++) {
+            listaResposta[i] = listaResposta[i].substring(0,4);
+        }
+        if( listaResposta[0] === listaResposta[1] || listaResposta[0] === listaResposta[2]){
+            resposta = listaResposta[0];
+        }else if( listaResposta[1] === listaResposta[2] ){
+            resposta = listaResposta[1];
+        }else{
+            resposta = listaResposta[0];
+        }
+        
+        document.getElementById("titulo").textContent =  RESULTS_MAP[resposta].title + ": ";
+        document.getElementById("resultado").textContent = RESULTS_MAP[resposta].contents;
+    }else{
+        alert("Selecione os três tipos para poder ver a resposta !!");
+    }
+}
 
 function addEvento(lista){
     for( let i = 0; i < lista.length; i++ ){
@@ -25,23 +61,25 @@ function addEvento(lista){
             lista[i].querySelector("img.checkbox").style.background = "#cfe3ff";
             lista[i].querySelector("img.checkbox").style.opacity = "1";
 
-            verificarClique(lista[i].getAttribute("data-question-id"));
+            verificarClique(
+                lista[i].getAttribute("data-question-id"),
+                lista[i].getAttribute("data-choice-id")
+            );
         } );
     }
 }
 
-function verificarClique(aux){
-    if( aux === "um" ){
+function verificarClique(classe, escolha){
+    if( classe === "um" ){
         cliquouUm = true;
-    }else if( aux === "dois"){
+        listaResposta[0] = escolha;
+    }else if( classe === "dois"){
         cliquouDois = true;
-    }else if( aux === "tres" ){
+        listaResposta[1] = escolha;
+    }else if( classe === "tres" ){
         cliquouTres = true;
+        listaResposta[2] = escolha;
     }
-    console.log(aux);
-    console.log( cliquouUm   );
-    console.log( cliquouDois );
-    console.log( cliquouTres );
     if (cliquouUm === true && cliquouDois === true && cliquouTres === true) {
         bloquearElementos();
     }
@@ -53,6 +91,7 @@ function bloquearElementos(){
         divs[i].parentNode.replaceChild(clone, divs[i] );
     }
 }
+
 function carregarListas(){
     divs = document.querySelectorAll("div");
     let aux;
